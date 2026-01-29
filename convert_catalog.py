@@ -169,7 +169,8 @@ def convert_to_facebook_catalog(input_csv: str, output_csv: str) -> None:
             facebook_row['google_product_category'] = category
             facebook_row['fb_product_category'] = category
             facebook_row['quantity_to_sell_on_facebook'] = quantity
-            facebook_row['sale_price'] = format_price(price)
+            # Leave sale_price empty - only populate when there's an actual sale
+            facebook_row['sale_price'] = ''
             
             converted_products.append(facebook_row)
     

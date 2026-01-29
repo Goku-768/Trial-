@@ -46,7 +46,7 @@ The converter generates a Facebook-compatible CSV with 47 columns including:
 10. **google_product_category** → Category from source
 11. **fb_product_category** → Category from source
 12. **quantity_to_sell_on_facebook** → Quantity from source
-13. **sale_price** → Same format as price
+13. **sale_price** → Left empty (populate only when there's an actual sale)
 
 #### Optional Fields (Empty):
 All other catalog fields (sale_price_effective_date, item_group_id, gender, color, size, etc.) are included but left empty as they're not present in the source data.
