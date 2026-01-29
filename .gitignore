@@ -5,6 +5,9 @@ __pycache__/
 *.so
 .Python
 
+# Generation scripts (keep in repo but can be excluded if needed)
+# generate_inventory.py
+
 # Virtual environments
 venv/
 env/

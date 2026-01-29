@@ -9,8 +9,9 @@ This repository contains tools to convert shop inventory CSV files into the stan
 ## Files in This Repository
 
 - **`convert_catalog.py`** - Python script that performs the conversion from shop inventory to Facebook catalog format
-- **`shop_inventory.csv`** - Source inventory data with product information (75+ sample products)
+- **`shop_inventory.csv`** - Source inventory data with product information (710 products)
 - **`catalog_products.csv`** - Generated Facebook/Meta catalog file (ready for upload)
+- **`generate_inventory.py`** - Utility script to generate the product inventory (optional)
 - **`README.md`** - This documentation file
 
 ## What is the Facebook Catalog Format?
@@ -125,7 +126,7 @@ Reading from: shop_inventory.csv
 Writing to: catalog_products.csv
 
 ✓ Conversion complete!
-✓ Processed 75 products
+✓ Processed 710 products
 ✓ Output saved to: catalog_products.csv
 
 ============================================================
@@ -222,4 +223,4 @@ This project is open source and available for use and modification.
 
 **Generated**: January 2026  
 **Format Version**: Facebook/Meta Catalog v2.0  
-**Products**: 75+ sample products included
+**Products**: 710 products across 21+ categories
