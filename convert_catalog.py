@@ -42,24 +42,36 @@ BRANDS = {
     ]
 }
 
+# Pre-compile brand patterns for better performance
+ALL_BRANDS_SORTED = []
+BRAND_PATTERNS = []
+
+def _initialize_brand_patterns():
+    """Initialize brand patterns once at module level."""
+    global ALL_BRANDS_SORTED, BRAND_PATTERNS
+    
+    # Flatten all brands into a single list
+    for category_brands in BRANDS.values():
+        ALL_BRANDS_SORTED.extend(category_brands)
+    
+    # Sort by length descending to match longer brand names first
+    ALL_BRANDS_SORTED.sort(key=len, reverse=True)
+    
+    # Pre-compile regex patterns for each brand
+    BRAND_PATTERNS = [(brand, re.compile(re.escape(brand), re.IGNORECASE)) 
+                      for brand in ALL_BRANDS_SORTED]
+
+# Initialize patterns at module load
+_initialize_brand_patterns()
+
 
 def extract_brand(item_name: str) -> str:
     """
     Extract recognizable brand from item name.
     Returns the brand name if found, empty string otherwise.
     """
-    # Flatten all brands into a single list
-    all_brands = []
-    for category_brands in BRANDS.values():
-        all_brands.extend(category_brands)
-    
-    # Sort by length descending to match longer brand names first
-    all_brands.sort(key=len, reverse=True)
-    
-    # Check each brand pattern
-    for brand in all_brands:
-        # Case-insensitive search for brand name in item name
-        pattern = re.compile(re.escape(brand), re.IGNORECASE)
+    # Check each pre-compiled brand pattern
+    for brand, pattern in BRAND_PATTERNS:
         if pattern.search(item_name):
             return brand
     

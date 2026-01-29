@@ -31,7 +31,7 @@ The source inventory contains these fields:
 
 ### Output Format (catalog_products.csv)
 
-The converter generates a Facebook-compatible CSV with 46 columns including:
+The converter generates a Facebook-compatible CSV with 47 columns including:
 
 #### Required Fields (Populated):
 1. **id** → Item ID from source
@@ -58,7 +58,7 @@ The converter automatically detects and extracts brand names from product titles
 - **Drinks**: Coca Cola, Pepsi, Fanta, Sprite, Dr Pepper, Monster, Red Bull, 7UP, Tango, Rio, Lucozade, Starbucks, Evian, Volvic
 - **Chocolate**: Cadbury, Galaxy, Mars, Snickers, Kit Kat, Twix, Milkybar, Kinder, M&M's, Quality Street
 - **Snacks**: Walkers, Pringles, Doritos, Cheetos, Kettle, Haribo, Skittles
-- **Food**: Heinz, Kellogg's, Nestle, Nescafe, McVitie's, Muller, Hovis, Nutella, Oreo, Philadelphia, Lurpak, Warburtons
+- **Food**: Heinz, Kellogg's, Nestle, Nescafe, McVitie's, Muller, Hovis, Nutella, Oreo, Philadelphia, Cathedral City, Lurpak, Anchor, Warburtons, Kingsmill
 - **Alcohol**: Jack Daniels, Smirnoff, Gordon's, Stella Artois, Budweiser, Guinness, Heineken, Corona, Carlsberg, Baileys, Bacardi, Captain Morgan, Jameson, 19 Crimes
 - **Indian Brands**: Haldiram's, Parle, Laila, TRS, Ajmi, Bikaji, Natco, Rajah, MDH
 - **Household**: Andrex, Plenty, Fairy, Comfort, Persil, Dettol
@@ -154,8 +154,12 @@ Modify the `format_price()` function:
 
 ```python
 def format_price(price: str) -> str:
-    price_float = float(price)
-    return f"{price_float:.2f} USD"  # Change GBP to USD, EUR, etc.
+    """Format price with currency code."""
+    try:
+        price_float = float(price)
+        return f"{price_float:.2f} USD"  # Change GBP to USD, EUR, etc.
+    except (ValueError, TypeError):
+        return "0.00 USD"
 ```
 
 ### Customize Availability Logic
@@ -164,12 +168,16 @@ Edit the `get_availability()` function:
 
 ```python
 def get_availability(quantity: str) -> str:
-    qty = int(float(quantity))
-    if qty > 10:
-        return "in stock"
-    elif qty > 0:
-        return "available to order"
-    else:
+    """Determine availability based on quantity."""
+    try:
+        qty = int(float(quantity))
+        if qty > 10:
+            return "in stock"
+        elif qty > 0:
+            return "available to order"
+        else:
+            return "out of stock"
+    except (ValueError, TypeError):
         return "out of stock"
 ```
 
