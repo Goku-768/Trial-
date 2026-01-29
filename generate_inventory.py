@@ -6,6 +6,7 @@ Generate expanded shop inventory with 710 products
 import csv
 import uuid
 import random
+import hashlib
 
 # Product templates organized by category
 PRODUCT_TEMPLATES = {
@@ -229,6 +230,23 @@ def generate_base_id_number(index):
     """Generate base UUID number for consistent ID generation"""
     return f"550e8400-e29b-41d4-a716-4466554{index:05d}"
 
+def generate_image_hash(product_name):
+    """
+    Generate a consistent hash-based image ID for a product.
+    Uses the base product name (without size) to ensure all size variants 
+    of the same product have the same image URL.
+    Format matches SumUp actual URLs: img_[UPPERCASE_ALPHANUMERIC_HASH]
+    """
+    # Create a hash from the base product name
+    hash_input = product_name.encode('utf-8')
+    hash_obj = hashlib.sha256(hash_input)
+    # Get first 26 characters of the hash in uppercase alphanumeric format
+    hash_hex = hash_obj.hexdigest().upper()
+    # Convert to base32-like format (alphanumeric only, uppercase)
+    hash_str = ''.join(c for c in hash_hex if c.isalnum())[:26]
+    return hash_str
+
+
 def generate_inventory():
     """Generate 710 product inventory"""
     products = []
@@ -265,9 +283,10 @@ def generate_inventory():
                 # Random quantity between 0 and 50
                 quantity = random.randint(0, 50)
                 
-                # Generate image URL
-                base_slug = base_name.lower().replace("'", "").replace(" ", "_")[:20]
-                image_url = f"https://images.sumup.com/img_{base_slug}_{size}"
+                # Generate image URL using hash format (same for all sizes of same product)
+                # Format: https://images.sumup.com/img_[HASH]
+                image_hash = generate_image_hash(base_name)
+                image_url = f"https://images.sumup.com/img_{image_hash}"
                 
                 # Generate UUID
                 item_id = generate_base_id_number(product_id)
@@ -316,8 +335,12 @@ def generate_inventory():
             product_name = f"{base_name} {size}g"
         
         quantity = random.randint(0, 50)
-        base_slug = base_name.lower().replace("'", "").replace(" ", "_")[:20]
-        image_url = f"https://images.sumup.com/img_{base_slug}_{size}"
+        
+        # Generate image URL using hash format (same for all sizes of same product)
+        # Format: https://images.sumup.com/img_[HASH]
+        image_hash = generate_image_hash(base_name)
+        image_url = f"https://images.sumup.com/img_{image_hash}"
+        
         item_id = generate_base_id_number(len(products) + 1)
         
         products.append({
